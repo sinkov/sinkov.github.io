@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Exploring IMDB actors network using NetworkX | Evgenii Sinkov</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="How does the Hollywood collaboration actors network look like? Are there any central nodes, bridge ties, influencers? What is the degree distibution / centrality and other parameters of the network? Any communities present?">
+    <meta name="generator" content="Hugo 0.104.0" />
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sinkov.github.io/portfolio/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Exploring IMDB actors network using NetworkX" />
+<meta property="og:description" content="How does the Hollywood collaboration actors network look like? Are there any central nodes, bridge ties, influencers? What is the degree distibution / centrality and other parameters of the network? Any communities present?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sinkov.github.io/portfolio/post/chapter-3/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-20T10:58:08-04:00" />
+<meta property="article:modified_time" content="2021-10-20T10:58:08-04:00" /><meta property="og:site_name" content="Evgenii Sinkov" />
+
+<meta itemprop="name" content="Exploring IMDB actors network using NetworkX">
+<meta itemprop="description" content="How does the Hollywood collaboration actors network look like? Are there any central nodes, bridge ties, influencers? What is the degree distibution / centrality and other parameters of the network? Any communities present?"><meta itemprop="datePublished" content="2021-10-20T10:58:08-04:00" />
+<meta itemprop="dateModified" content="2021-10-20T10:58:08-04:00" />
+<meta itemprop="wordCount" content="1386">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Exploring IMDB actors network using NetworkX"/>
+<meta name="twitter:description" content="How does the Hollywood collaboration actors network look like? Are there any central nodes, bridge ties, influencers? What is the degree distibution / centrality and other parameters of the network? Any communities present?"/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sinkov.github.io/portfolio/images/network.png');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sinkov.github.io/portfolio/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Evgenii Sinkov
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sinkov.github.io/portfolio/about/" title="My background page">
+              My background
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sinkov.github.io/portfolio/post/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    <a href="https://www.linkedin.com/in/sinkovevgeny/" target="_blank" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" rel="noopener" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    <a href="https://github.com/sinkov" target="_blank" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" rel="noopener" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    <a href="https://www.superprof.co.uk/pro-tennis-player-attentive-and-passionate-guarantee-your-joy-and-progress-any-level.html" target="_blank" class="Superprof ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Superprof link" rel="noopener" aria-label="follow on Superprof——Opens in a new window">
+      
+        Superprof
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">Exploring IMDB actors network using NetworkX</h1>
+          
+            <h2 class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              How does the Hollywood collaboration actors network look like? Are there any central nodes, bridge ties, influencers? What is the degree distibution / centrality and other parameters of the network? Any communities present?
+            </h2>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        PROJECTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sinkov.github.io/portfolio/post/chapter-3/&amp;title=Exploring%20IMDB%20actors%20network%20using%20NetworkX" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Exploring IMDB actors network using NetworkX</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-10-20T10:58:08-04:00">October 20, 2021</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p><strong>1. Introduction to this group project (<a href="https://github.com/sinkov/IMDB-actors-network-scrape" target="_blank">Github link</a></strong>)</p>
+<p>This project sought to analyse a proportion of the actor network embedded in the American
+film industry. Data used in the network analysis was scraped from a list on IMDb titled ‘ 500
+Top-Rated Features Since 2000’. The scope of this project includes only US movies released
+between 2000 and 2012, and the 10 main actors from each film. The Hollywood movie
+industry is characterized by short-term relationships based on collaboration. A set of actors
+co-starring in a movie will interact for the duration of the film’s production process.
+Moreover, the relationships among actors across movies are the product of an enduring
+network whereby mutual trust and reputations have been established over the years (Cattani
+and Ferriani, 2008).</p>
+<p><strong>2. Network characteristics</strong></p>
+<p>In the graph representing the co-stardom network, each movie actor is illustrated as a point
+(node) and each collaborative relation between a pair of actors is illustrated as a line (edge).
+The network is characterized as one-mode, weighted, and undirected. One-mode because
+only the set of movie actors is considered. Weighted as actors who have collaborated in more
+movies together, will have stronger connections. Undirected because of the collaborative
+nature of the relationships.</p>
+<p><strong>3. Representing the network as a graph</strong></p>
+<p>When the network was initially drawn out with all 2708 actors, it appeared to be
+disconnected. Therefore, for the analysis that followed, we derived a sub-graph ‘Gcc’ which
+comprised solely the connected components i.e., 2503 nodes. The colour of the edge
+corresponds to its weight (blue: 1, red: 2 - 3 , green: &gt;3).</p>
+<p>Upon first inspection, the graph exhibits many clusters of nodes which indicates a small-world
+network system. It may be inferred, each cluster in the graph represents a community of
+nodes, which suggests the network is divided into modules. This outcome is perhaps the result
+of specifying the number of actors per movie, which automatically groups actors together (as
+a community) based on the movie they co-starred in.</p>
+<figure><img src="https://sinkov.github.io/portfolio/images/net1.png"/>
+</figure>
+
+<p><strong>4. Community Detection</strong></p>
+<p>Due to issues with applying the Girvan-Newman algorithm conventionally used for
+community-detection, we resorted to the Kojaku-Masuda algorithm. The number of
+communities detected by Kojaku-Masuda algorithm for the whole network is 298 with group
+sizes ranging from 3 to 33. As such, the Hollywood movie actor network has high modularity
+which is denoted by the dense connections of nodes contained within communities.</p>
+<p><strong>5. Degree distribution of the network</strong></p>
+<p>The degree distribution for Gcc reveals some unconventional patterns. Since we have
+specified that there be 10 actors per movie, the most frequent degree is 9 (10 actors per
+movie minus ego node), and most degree values are 9n for actors starring in multiple movies.</p>
+<p>Some hubs are evident in the graph as there are few nodes with degrees above 9, signifying
+they are the most connected in the network. In the actual network, these hubs correspond to
+actors that starred in the greatest number of movies from the IMDB list.</p>
+<p><strong>6. Network Attributes</strong></p>
+<p>Network ‘diameter’ which indicates the actual size of the network, was found to be 9 meaning
+that the longest shortest path in this network constitutes 9 consecutive nodes. The average
+shortest path length was found to be 4, which signifies a difference of 5 compared to the
+network diameter. Moreover, the average degree of connectivity in the graph was found to
+be ≈7.</p>
+<p>A correlation matrix for the node centrality measures was generated, which revealed a great
+deal of variance among the nodes. This variance points to the activity of homophily
+mechanisms in the network.</p>
+<figure><img src="https://sinkov.github.io/portfolio/images/fig5.png"/>
+</figure>
+
+<p>An important inference is that the network demonstrates small-world properties as it fits the
+characteristics of having a high mean clustering coefficient (0.88) and a small value for
+average shortest path (4). It may also be noted that most nodes have a clustering coefficient
+equal to 1, which indicates the network comprises many cliques. Our analysis revealed that
+1997 nodes are in cliques in this network which signify the dense clusters in the network
+graph.</p>
+<p>These cliques were identified by generating a graph which manipulated the colours of nodes
+based on their clustering coefficient scores, with the colour red indicating a clustering
+coefficient of 1. Accordingly, all the cliques can be spotted from the red clusters of nodes in
+the graph; and we find that cliques are overwhelmingly prevalent in the network.</p>
+<p><strong>7. Centrality Measures</strong></p>
+<p>To determine the most important actors based on different premises, we used the following
+centrality measures:</p>
+<p>a. Degree Centrality</p>
+<p>The degree centrality of the node refers to the fraction of degrees this node has in comparison
+to the whole network, thus it is a measure of how many connections the node has. The highest
+degree centrality values were attributed to the following movie actors:
+Actor / Actress Degree Centrality
+John C. Reilly 0.
+Joseph Gordon-Levitt 0.
+Laura Linney 0.
+Jim Broadbent 0.
+Philip Seymour Hoffman 0.</p>
+<p>The actors/actresses mentioned in the above have the highest numbers of connections in the
+network. In the graph, each of these actors’ representative nodes would signify a hub. We
+may infer that they have acted in the greatest number of the top US movies rated in IMDB.</p>
+<p>b. Betweenness Centrality</p>
+<p>Betweenness centrality conveys the fraction of times the node appears on the shortest paths
+in the network. Accordingly, a node (actor/actress) with a high betweenness centrality will be</p>
+<figure><img src="https://sinkov.github.io/portfolio/images/fig7.png"/>
+</figure>
+
+<p>situated centrally in the network and regarded as mediators. The below table shows the
+actors/actresses with the highest betweenness scores:
+Actor / Actress Betweenness Centrality
+Joseph Gordon-Levitt 0.
+John C. Reilly 0.
+Laura Linney 0.03078987307250857,
+Philip Seymour Hoffman 0.
+Tommy Lee Jones 0.</p>
+<p>It may be noted that the same highly connected actors are in a central position in the network.
+Therefore, there is a correlation between the betweenness and degree centrality measures
+in this network. The mean betweenness centrality reflects a relatively low value due to movies
+being selected based on their IMDB rating rather than common denominators (e.g. genre,
+common actors); thus the collaborations and shortest paths across the network have been
+artificially reduced.</p>
+<p>c. Eigenvector Centrality</p>
+<p>Eigenvector centrality depicts the strength of a node’s position and the strength of its
+neighbors’ position. If an actor holds a relatively middling position, but their neighbouring
+actors they have acted with are important in the network their score will be higher. The table
+below lists the actors/actresses with the highest Eigenvector centrality:
+Actor / Actress Betweenness Centrality
+Joseph Gordon-Levitt 0.
+Philip Seymour Hoffman 0.
+John C. Reilly 0.
+Christian Bale 0.
+Leonardo DiCaprio 0.</p>
+<p>The table introduces two new actors who are Christian Bale and Leonardo DiCaprio to the
+nodes with the highest centralities. This can be explained by the fact both mentioned actors
+have neighbours with relatively high degrees (connections) which was reflected in the
+eigenvector centrality value.</p>
+<p><strong>8. Network Outcomes</strong></p>
+<p>The network demonstrates a small-world network, as any two nodes (actors) can reach each
+other through a small sequence of nodes given that the network diameter is 9. This outcome
+may have been produced due to the characteristics we ascribed to the network by selecting
+the top 10 actors from the top-rated US movies. Accordingly, we end up with an actor set
+comprising the most eminent actors.</p>
+<p>A possible outcome of this network is homophily based on popularity of the actor. The most
+famous actors will likely co-star with very famous actors as well. As mentioned in the
+introduction, movie actors that are well-established in the industry have built strong
+reputations over the years. The more movies an actor has starred in, the more they have built
+trust with other actors in the network, which leads to them being selected for more popular
+movie roles in the future and starring aside other big actors.</p>
+<p>Finally, due to the short average path of the graph, an actor can very easily connect with
+another actor in the network. For example, we found that Tom Hardy only needs 2 steps to
+reach Lindsay Lohan. In a sense this occurrence clearly conveys the small world phenomenon,
+aka the ‘6 degrees of separation’ theory, which we would inevitably find in a network of the
+most prominent Hollywood stars.</p>
+<p><strong>9. References</strong></p>
+<p>Cattani, G., &amp; Ferriani, S. (2008) ‘A Core/Periphery Perspective on Individual Creative
+Performance: Social Networks and Cinematic Achievements in the Hollywood Film Industry’,
+<em>Organization Science</em> , <em>19</em> (6), pp. 824–844.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sinkov.github.io/portfolio/" >
+    &copy;  Evgenii Sinkov 2022 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    <a href="https://www.linkedin.com/in/sinkovevgeny/" target="_blank" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" rel="noopener" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    <a href="https://github.com/sinkov" target="_blank" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" rel="noopener" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    <a href="https://www.superprof.co.uk/pro-tennis-player-attentive-and-passionate-guarantee-your-joy-and-progress-any-level.html" target="_blank" class="Superprof ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Superprof link" rel="noopener" aria-label="follow on Superprof——Opens in a new window">
+      
+        Superprof
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

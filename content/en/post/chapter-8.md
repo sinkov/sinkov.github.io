@@ -1,0 +1,9 @@
+---
+date: 2022-09-02T10:58:08-04:00
+description: "Applied Research Project – Masters Thesis. Supervised by Rolls Royce. "
+featured_image: "/images/frame.png"
+title: "Developing a Natural Language Processing Classifier as a Feature for an Assistive Device" 
+---
+📂 [Github Repo](https://github.com/sinkov/Applied-Research-Project-NLP) contains the full report in pdf, Jupyter notebooks and other supplementary files.
+# Abstract
+Since the emergence of AI and the recent increase in computational power of machines, the healthcare industry has quickly become one of the most forward-thinking fields of application. This work is intended to help the Rolls-Royce initiative in developing an assistive technology device for Motor Neuron Disease patients. This paper compares different Natural Language Processing and machine learning techniques for predicting the category of a user's question using a publicly available dataset - Yahoo Answers, which contains ten categories and 1,4 million rows. The methodology included careful consideration of various pre-processing pipelines, the definition of customized functions, and the comparison and selection of machine learning classifiers. The resulting performance was evaluated based on the accuracy capable of capturing category similarity and corresponding training time. The following settings were justified and chosen based on the constraints set by the Rolls Royce research team: Pre-processing layer containing regex cleaning; TF IDF approach as a vectorization method; and Naïve Bayes as a classifier. The resulting customized accuracy, capturing similarity between categories, trained on one hundred thousand questions is 68%. The various misclassification examples were explored, and potential extensions to the classification procedure were discussed. The team can either use the model with the suggested settings or run further experiments using the provided comparison pipeline.
