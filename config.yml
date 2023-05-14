@@ -10,7 +10,7 @@ googleAnalytics: ''
 enableEmoji: true
 enableRobotsTXT: true
 canonifyURLs: true
-publishDir: "docs"
+publishDir: "public"
 markup.goldmark.renderer: 
   unsafe: true
 blackfriday:
@@ -37,5 +37,8 @@ params:
       url: 'https://www.linkedin.com/in/sinkovevgeny/'
     - name: github
       url: 'https://github.com/sinkov'
+    - name: CV
+      url: 'https://drive.google.com/file/d/1Ymz2YXoE-pb-nCGYsrNDUT0Ed2pdCeXS/view?usp=sharing'
     - name: Superprof
       url: 'https://www.superprof.co.uk/pro-tennis-player-attentive-and-passionate-guarantee-your-joy-and-progress-any-level.html'
+
